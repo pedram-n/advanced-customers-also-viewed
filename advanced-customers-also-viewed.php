@@ -39,3 +39,24 @@ if (!wp_next_scheduled('acav_cron_job')) {
     }
     wp_schedule_event($timestamp, 'daily', 'acav_cron_job');
 }
+
+
+register_activation_hook(__FILE__, 'acav_create_tables');
+function acav_create_tables() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'acav_related_products';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        product_id BIGINT(20) UNSIGNED NOT NULL,
+        related_product_id BIGINT(20) UNSIGNED NOT NULL,
+        score BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+        PRIMARY KEY  (id),
+        KEY product_id (product_id),
+        KEY related_product_id (related_product_id)
+    ) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}

@@ -20,19 +20,35 @@ function acav_recently_viewed_shortcode($atts) {
 
 add_shortcode('frequently_viewed_together', 'acav_frequently_viewed_shortcode');
 function acav_frequently_viewed_shortcode($atts) {
-    $atts = shortcode_atts(['product_id' => 0], $atts);
-    if (!$atts['product_id']) return '';
+    global $wpdb;
 
-    $related = get_option("acav_related_products_{$atts['product_id']}", []);
-    if (empty($related)) return '';
+    $atts = shortcode_atts(['product_id' => 0], $atts);
+    $product_id = absint($atts['product_id']);
+    if (!$product_id) return '';
+
+    $table_name = $wpdb->prefix . 'acav_related_products';
+
+    //Get High Score Products
+    $related_ids = $wpdb->get_col($wpdb->prepare(
+        "SELECT related_product_id 
+         FROM $table_name 
+         WHERE product_id = %d 
+         ORDER BY score DESC 
+         LIMIT 5",
+        $product_id
+    ));
+
+    if (empty($related_ids)) return '';
 
     $args = [
-        'post_type' => 'product',
-        'post__in' => $related,
-        'orderby' => 'post__in',
+        'post_type'      => 'product',
+        'post__in'       => $related_ids,
+        'orderby'        => 'post__in',
+        'posts_per_page' => 5,
     ];
     $query = new WP_Query($args);
+
     ob_start();
-    include plugin_dir_path(__FILE__) . '../templates/frequently-viewed-together.php';
+    include ACAV_PATH . 'templates/frequently-viewed-together.php';
     return ob_get_clean();
 }

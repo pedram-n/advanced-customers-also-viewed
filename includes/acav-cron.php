@@ -1,9 +1,19 @@
 <?php
 function acav_generate_frequently_viewed_data() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'acav_related_products';
+
+    //Remove Old Table
+    $wpdb->query("TRUNCATE TABLE $table_name");
+
     $all_users = get_users();
     $relations = [];
+
+
     foreach ($all_users as $user) {
         $views = get_user_meta($user->ID, 'acav_recently_viewed', true) ?: [];
+        $views = array_map('absint', (array) $views);
+        $views = array_filter($views);
         foreach ($views as $product_id) {
             foreach ($views as $related_pid) {
                 if ($product_id !== $related_pid) {
@@ -12,9 +22,23 @@ function acav_generate_frequently_viewed_data() {
             }
         }
     }
-    foreach ($relations as $pid => $related) {
+
+
+    foreach ($relations as $product_id => $related) {
         arsort($related);
-        $related_products = array_slice(array_keys($related), 0, 5);
-        update_option("acav_related_products_{$pid}", $related_products);
+        $related_products = array_slice($related, 0, 5, true); // top 5 با score
+
+        foreach ($related_products as $related_pid => $score) {
+            $wpdb->insert(
+                $table_name,
+                array(
+                    'product_id'        => $product_id,
+                    'related_product_id'=> $related_pid,
+                    'score'             => $score
+                ),
+                ['%d', '%d', '%d']
+            );
+        }
     }
 }
+acav_generate_frequently_viewed_data();
