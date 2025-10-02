@@ -11,4 +11,19 @@ Domain Path: /languages
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
+if (!defined('ABSPATH')) exit;
 
+define('ACAV_PATH', plugin_dir_path(__FILE__));
+define('ACAV_URL', plugin_dir_url(__FILE__));
+
+require_once ACAV_PATH . 'includes/acav-functions.php';
+require_once ACAV_PATH . 'includes/acav-shortcodes.php';
+
+
+add_action('wp', 'acav_track_product_view');
+function acav_track_product_view() {
+    if (is_product()) {
+        global $post;
+        acav_set_recently_viewed($post->ID);
+    }
+}
