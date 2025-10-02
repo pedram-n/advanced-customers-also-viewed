@@ -18,6 +18,7 @@ define('ACAV_URL', plugin_dir_url(__FILE__));
 
 require_once ACAV_PATH . 'includes/acav-functions.php';
 require_once ACAV_PATH . 'includes/acav-shortcodes.php';
+require_once ACAV_PATH . 'includes/acav-cron.php';
 
 
 add_action('wp', 'acav_track_product_view');
