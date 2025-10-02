@@ -21,9 +21,20 @@ require_once ACAV_PATH . 'includes/acav-shortcodes.php';
 
 
 add_action('wp', 'acav_track_product_view');
-function acav_track_product_view() {
+function acav_track_product_view()
+{
     if (is_product()) {
         global $post;
         acav_set_recently_viewed($post->ID);
     }
+}
+
+//Crate Cron Job
+add_action('acav_cron_job', 'acav_generate_frequently_viewed_data');
+if (!wp_next_scheduled('acav_cron_job')) {
+    $timestamp = strtotime('02:00:00');
+    if ($timestamp <= time()) {
+        $timestamp = strtotime('tomorrow 02:00:00');
+    }
+    wp_schedule_event($timestamp, 'daily', 'acav_cron_job');
 }

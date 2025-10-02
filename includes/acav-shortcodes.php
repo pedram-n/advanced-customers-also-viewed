@@ -33,7 +33,6 @@ function acav_frequently_viewed_shortcode($atts) {
     ];
     $query = new WP_Query($args);
     ob_start();
-    var_dump($related);
     include plugin_dir_path(__FILE__) . '../templates/frequently-viewed-together.php';
     return ob_get_clean();
 }
