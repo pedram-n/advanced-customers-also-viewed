@@ -9,7 +9,6 @@ function acav_generate_frequently_viewed_data() {
     $all_users = get_users();
     $relations = [];
 
-
     foreach ($all_users as $user) {
         $views = get_user_meta($user->ID, 'acav_recently_viewed', true) ?: [];
         $views = array_map('absint', (array) $views);
@@ -22,7 +21,6 @@ function acav_generate_frequently_viewed_data() {
             }
         }
     }
-
 
     foreach ($relations as $product_id => $related) {
         arsort($related);
@@ -38,7 +36,7 @@ function acav_generate_frequently_viewed_data() {
                 ['%d', '%d', '%d']
             );
         }
-        delete_transient("acav_related_products_{$product_id}");
+        delete_transient('acav_related_products_'.$product_id);
     }
 }
 acav_generate_frequently_viewed_data();

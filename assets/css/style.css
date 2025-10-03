@@ -1,0 +1,26 @@
+.acav-product-wrapper{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.acav-product-item {
+    border: 1px solid #cfcfcf;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.acav-product-item a{
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+}
+.acav-product-title{
+    font-size: 16px;
+}
+.acav-product-price{
+    background: #cfcfcf;
+    margin: 10px -10px -10px -10px;
+    font-size: 15px;
+    text-align: center;
+    padding: 5px;
+}

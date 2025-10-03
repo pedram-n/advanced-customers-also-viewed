@@ -20,6 +20,15 @@ require_once ACAV_PATH . 'includes/acav-functions.php';
 require_once ACAV_PATH . 'includes/acav-shortcodes.php';
 require_once ACAV_PATH . 'includes/acav-cron.php';
 
+add_action('wp_enqueue_scripts', 'acav_enqueue_assets');
+function acav_enqueue_assets() {
+    global $post;
+    if (isset($post->post_content) &&
+        (has_shortcode($post->post_content, 'recently_viewed_products') ||
+        has_shortcode($post->post_content, 'frequently_viewed_together'))) {
+        wp_enqueue_style('acav-styles', ACAV_URL . 'assets/css/style.css', array(), '1.0.0');
+    }
+}
 
 add_action('wp', 'acav_track_product_view');
 function acav_track_product_view()
