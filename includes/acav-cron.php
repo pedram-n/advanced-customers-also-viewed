@@ -1,4 +1,5 @@
 <?php
+if (!defined('ABSPATH')) exit;
 function acav_generate_frequently_viewed_data() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'acav_related_products';
@@ -39,4 +40,7 @@ function acav_generate_frequently_viewed_data() {
         delete_transient('acav_related_products_'.$product_id);
     }
 }
+add_action('acav_cron_job', 'acav_generate_frequently_viewed_data');
+
+
 acav_generate_frequently_viewed_data();

@@ -1,6 +1,55 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+//Create DB Tables
+function acav_create_tables() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'acav_related_products';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        product_id BIGINT(20) UNSIGNED NOT NULL,
+        related_product_id BIGINT(20) UNSIGNED NOT NULL,
+        score BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+        PRIMARY KEY  (id),
+        KEY product_id (product_id),
+        KEY related_product_id (related_product_id)
+    ) $charset_collate;";
+
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+    }
+}
+
+//Delete DB Tables
+function acav_delete_tables() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'acav_related_products';
+    $wpdb->query("DROP TABLE IF EXISTS $table_name");
+}
+
+//Create Cron Job
+function acav_schedule_cron_job() {
+    if (!wp_next_scheduled('acav_cron_job')) {
+        $timestamp = strtotime('02:00:00');
+        if ($timestamp <= time()) {
+            $timestamp = strtotime('tomorrow 02:00:00');
+        }
+        wp_schedule_event($timestamp, 'daily', 'acav_cron_job');
+    }
+}
+
+//Delete Cron Job
+function acav_clear_cron_job() {
+    $timestamp = wp_next_scheduled('acav_cron_job');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'acav_cron_job');
+    }
+}
+
+//Get User ID
 function acav_get_user_id() {
     return is_user_logged_in() ? get_current_user_id() : null;
 }

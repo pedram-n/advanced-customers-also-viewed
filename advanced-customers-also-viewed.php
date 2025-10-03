@@ -39,33 +39,21 @@ function acav_track_product_view()
     }
 }
 
-//Crate Cron Job
+register_activation_hook(__FILE__, 'acav_activate_plugin');
+function acav_activate_plugin() {
+    acav_create_tables();
+    acav_schedule_cron_job();
+}
+
+register_deactivation_hook(__FILE__, 'acav_deactivate_plugin');
+function acav_deactivate_plugin() {
+    acav_clear_cron_job();
+}
+
+register_uninstall_hook(__FILE__, 'acav_uninstall_plugin');
+function acav_uninstall_plugin() {
+    acav_clear_cron_job();
+    acav_delete_tables();
+}
+
 add_action('acav_cron_job', 'acav_generate_frequently_viewed_data');
-if (!wp_next_scheduled('acav_cron_job')) {
-    $timestamp = strtotime('02:00:00');
-    if ($timestamp <= time()) {
-        $timestamp = strtotime('tomorrow 02:00:00');
-    }
-    wp_schedule_event($timestamp, 'daily', 'acav_cron_job');
-}
-
-
-register_activation_hook(__FILE__, 'acav_create_tables');
-function acav_create_tables() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'acav_related_products';
-    $charset_collate = $wpdb->get_charset_collate();
-
-    $sql = "CREATE TABLE $table_name (
-        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        product_id BIGINT(20) UNSIGNED NOT NULL,
-        related_product_id BIGINT(20) UNSIGNED NOT NULL,
-        score BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-        PRIMARY KEY  (id),
-        KEY product_id (product_id),
-        KEY related_product_id (related_product_id)
-    ) $charset_collate;";
-
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
-}
