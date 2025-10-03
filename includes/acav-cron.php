@@ -26,8 +26,7 @@ function acav_generate_frequently_viewed_data() {
 
     foreach ($relations as $product_id => $related) {
         arsort($related);
-        $related_products = array_slice($related, 0, 5, true); // top 5 با score
-
+        $related_products = array_slice($related, 0, 5, true);
         foreach ($related_products as $related_pid => $score) {
             $wpdb->insert(
                 $table_name,
@@ -39,6 +38,7 @@ function acav_generate_frequently_viewed_data() {
                 ['%d', '%d', '%d']
             );
         }
+        delete_transient("acav_related_products_{$product_id}");
     }
 }
 acav_generate_frequently_viewed_data();

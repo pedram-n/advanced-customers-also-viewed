@@ -28,15 +28,22 @@ function acav_frequently_viewed_shortcode($atts) {
 
     $table_name = $wpdb->prefix . 'acav_related_products';
 
-    //Get High Score Products
-    $related_ids = $wpdb->get_col($wpdb->prepare(
-        "SELECT related_product_id 
+    //Prepare Transient
+    $transient_key = 'acav_related_products_'.$product_id;
+    $related_ids = get_transient($transient_key);
+
+    if ($related_ids === false) {
+        //Get High Score Products
+        $related_ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT related_product_id 
          FROM $table_name 
          WHERE product_id = %d 
          ORDER BY score DESC 
          LIMIT 5",
-        $product_id
-    ));
+            $product_id
+        ));
+        set_transient($transient_key, $related_ids, DAY_IN_SECONDS);
+    }
 
     if (empty($related_ids)) return '';
 
