@@ -33,10 +33,12 @@ function acav_delete_tables() {
 //Create Cron Job
 function acav_schedule_cron_job() {
     if (!wp_next_scheduled('acav_cron_job')) {
-        $timestamp = strtotime('02:00:00');
-        if ($timestamp <= time()) {
-            $timestamp = strtotime('tomorrow 02:00:00');
+        $wp_timezone = wp_timezone();
+        $datetime = new DateTime('today 02:00:00', $wp_timezone);
+        if ($datetime->getTimestamp() <= time()) {
+            $datetime = new DateTime('tomorrow 02:00:00', $wp_timezone);
         }
+        $timestamp = $datetime->getTimestamp();
         wp_schedule_event($timestamp, 'daily', 'acav_cron_job');
     }
 }
