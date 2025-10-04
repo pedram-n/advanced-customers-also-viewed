@@ -51,11 +51,6 @@ function acav_clear_cron_job() {
     }
 }
 
-//Get User ID
-function acav_get_user_id() {
-    return is_user_logged_in() ? get_current_user_id() : null;
-}
-
 //Get Viewed Data
 function acav_get_recently_viewed() {
     if (is_user_logged_in()) {
