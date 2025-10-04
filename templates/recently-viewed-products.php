@@ -1,4 +1,6 @@
-<?php if ($query->have_posts()) { ?>
+<?php
+if (!defined('ABSPATH')) exit;
+if ($query->have_posts()) { ?>
     <div class="acav-recently-viewed">
         <h3><?php esc_html_e('Recently Viewed Products', 'advanced-customers-also-viewed'); ?></h3>
         <div class="acav-product-wrapper">

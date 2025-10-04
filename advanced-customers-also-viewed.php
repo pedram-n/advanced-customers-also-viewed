@@ -50,5 +50,3 @@ function acav_uninstall_plugin() {
     acav_clear_cron_job();
     acav_delete_tables();
 }
-
-add_action('acav_cron_job', 'acav_generate_frequently_viewed_data');
