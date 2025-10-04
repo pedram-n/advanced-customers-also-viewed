@@ -41,6 +41,3 @@ function acav_generate_frequently_viewed_data() {
     }
 }
 add_action('acav_cron_job', 'acav_generate_frequently_viewed_data');
-
-
-acav_generate_frequently_viewed_data();
