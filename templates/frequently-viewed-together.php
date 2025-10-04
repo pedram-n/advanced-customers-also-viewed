@@ -8,7 +8,7 @@
                 <div class="acav-product-item">
                     <a href="<?php the_permalink(); ?>">
                         <?php if (has_post_thumbnail()) {
-                            the_post_thumbnail('thumbnail');
+                            the_post_thumbnail('medium');
                         } ?>
                         <span class="acav-product-title"><?php echo esc_html(get_the_title()); ?></span>
                         <span class="acav-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></span>
