@@ -11,7 +11,7 @@ A WordPress WooCommerce plugin to track product views and display "Recently View
 ## Installation
 1. Upload the plugin folder to `/wp-content/plugins/`.
 2. Activate the plugin via the 'Plugins' menu in WordPress.
-3. Configure plugin settings (if applicable).
+3. Configure plugin settings.
 
 ## Usage
 Once activated, the plugin automatically starts tracking product views.
@@ -22,6 +22,9 @@ Once activated, the plugin automatically starts tracking product views.
 
 - `[frequently_viewed_together product_id="123"]`  
   Displays products frequently viewed together with the given product ID.
+
+- `[frequently_viewed_together]`  
+  When used on a single product page, automatically displays products frequently viewed together with the current product
 
 ## Changelog
 ### 1.0.0
