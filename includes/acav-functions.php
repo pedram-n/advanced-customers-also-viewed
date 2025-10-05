@@ -121,3 +121,32 @@ function acav_get_related_products($product_id, $limit = 5) {
     return $related_ids;
 }
 
+//Option Page Handler
+function acav_option_page_handler()
+{
+    require_once ACAV_PATH . 'templates/admin-main-option.php';
+}
+
+//Admin Form Handler
+add_action( 'admin_init', function() {
+    if ( isset( $_POST['acav_regenerate_data'] ) ) {
+        if ( ! isset( $_POST['acav_regenerate_nonce'] ) || ! wp_verify_nonce( $_POST['acav_regenerate_nonce'], 'acav_regenerate_data_action' ) ) {
+            wp_die( __( 'Security check failed.', 'advanced-customers-also-viewed' ) );
+        }
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( __( 'You do not have permission to perform this action.', 'advanced-customers-also-viewed' ) );
+        }
+
+        if ( function_exists( 'acav_generate_frequently_viewed_data' ) ) {
+            acav_generate_frequently_viewed_data();
+            $status = 'success';
+        } else {
+            $status = 'error';
+        }
+
+        wp_redirect( add_query_arg( 'acav_status', $status, menu_page_url( 'acav-options', false ) ) );
+        exit;
+    }
+});
+

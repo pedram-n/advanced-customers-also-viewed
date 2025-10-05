@@ -50,3 +50,16 @@ function acav_uninstall_plugin() {
     acav_clear_cron_job();
     acav_delete_tables();
 }
+
+
+function acav_register_admin_page() {
+    add_menu_page(
+        __( 'Also viewed option', 'advanced-customers-also-viewed' ),
+        __( 'ACAV options', 'advanced-customers-also-viewed' ),
+        'manage_options',
+        'acav-options',
+        'acav_option_page_handler',
+        'dashicons-chart-pie'
+    );
+}
+add_action( 'admin_menu', 'acav_register_admin_page' );
